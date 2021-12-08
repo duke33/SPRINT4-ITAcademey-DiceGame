@@ -5,19 +5,14 @@ const router = express.Router();
 const {
   createUser, modifyPlayerName, cleanGameLog, makeAPlay, playersList, individualPlayerSuccessRate, playersAndSuccessRateList, winner, looser,
 } = require('../controllers/mongo-controllers');
-// TODO error handling logic!!
-// TODO separar todo en modulos
-// TODO fijate si necesitas .exec!!!!!!!
-// TODO poner status code????
 
 // POST /players: crea un jugador
-// TODO hacer que no se pueda repetir el nombre, a no ser que sea anonimo
 router.post('/', createUser);
 
 // PUT /players: modifica el nombre del jugador
 router.put('/:playerId', modifyPlayerName);
 
-// DELETE /players/{id}/games: elimina las tiradas del jugador //TODO cambiar lo que devuelve
+// DELETE /players/{id}/games: elimina las tiradas del jugador
 router.delete('/:playerId/games', cleanGameLog);
 
 // POST /players/{id}/games: un jugador específico realiza un tirón
@@ -27,7 +22,7 @@ router.post('/:playerId/games', makeAPlay);
 // GET /players/{id}/games: devuelve el listado de jugadas por un jugador.
 router.get('/:playerId/games', playersList);
 
-// Devuelve el porcentaje de exito de un jugardor especifico
+// Devuelve el porcentaje de exito de un jugador especifico
 router.get('/:playerId/games/rate', individualPlayerSuccessRate);
 
 // GET /players: devuelve el listado de todos los jugadores del sistema con su porcentaje medio de logros
