@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-// TODO sacar esta funcion de aca
+// Method to be used to calculate the succes rate for each instance
 function successRateCalc() {
   const wonGames = this.gameLog.filter((obj) => obj.gameWon === true).length;
   const totalGames = this.gameLog.length;
@@ -20,16 +20,9 @@ const UserSchema = new Schema({
 
 });
 
-// assign a function to the "methods" object of our animalSchema
-// TODO cambiar el nombre a esto por favor
+// assign a function to the "methods" object of UserSchema
 UserSchema.methods.successRateCalc = successRateCalc;
-
-// UserSchema.path('banana').get(() => `${JSON.stringify(this)} is my name`);
-
-// TODO borrar esto si no lo usas UserSchema.set('toJSON', { getters: true });
 
 // Compile model from schema
 const User = mongoose.model('User', UserSchema);
 module.exports = User;
-
-// TODO ver la diferencia entre schema y model
