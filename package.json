@@ -2,16 +2,17 @@
   "name": "nodeinitialdemo",
   "version": "1.0.0",
   "description": "### Project Structure",
-  "main": "index.js",
+  "main": "app/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "nodemon server.js"
+    "serve": "nodemon app/app.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^9.0.2",
     "express": "^4.17.1",
+    "mongoose": "^6.0.14",
     "pm2": "^4.5.6"
   },
   "devDependencies": {

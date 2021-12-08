@@ -12,6 +12,6 @@
     },
     "rules": {
         "consistent-return": 0,
- "no-console": "off"  
+        "no-console": "off"
     }
 }

@@ -1,15 +1,113 @@
+/* eslint-disable max-len */
 const express = require('express');
 
 const app = express();
 const port = 3000;
 
+//----------------------
+const mongoose = require('mongoose');
+const User = require('./user-schema');
+const rollTheDice = require('./game');
+
+const mongoDb = 'mongodb://localhost:27017/dice-game';
+mongoose.connect(mongoDb, { useUnifiedTopology: true, useNewUrlParser: true });
+const db = mongoose.connection;
+db.on('connected', () => console.log('Db connected'));
+db.on('error', console.error.bind(console, 'mongo connection error'));
+//----------------------
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+// TODO error handling logic!!
 
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('Welcome to the dice Game!!!');
+});
+
+// POST /players: crea un jugador
+// TODO hacer que no se pueda repetir el nombre, a no ser que sea anonimo
+app.post('/players', async (req, res) => {
+  const newPlayer = new User({
+    name: req.body.name,
+  });
+
+  try {
+    await newPlayer.save();
+    res.send(newPlayer);
+  } catch (err) { res.send(err); }
+});
+
+// TODO hacer que devuelva el nombre nuevo
+// PUT /players: modifica el nombre del jugador
+app.put('/players/:playerId', async (req, res) => {
+  const { playerId } = req.params;
+  const { newName } = req.body;
+  try {
+    const updatedPlayer = await User.findByIdAndUpdate(playerId, { name: newName }, { new: true });
+    res.send(updatedPlayer);
+  } catch (err) { res.send(err); }
+});
+// TODO ver como tratas los errores, sin con next, o en el lugar
+// DELETE /players/{id}/games: elimina las tiradas del jugador //TODO cambiar lo que devuelve
+app.delete('/players/:playerId/games', async (req, res) => {
+  const { playerId } = req.params;
+  try {
+    const foundUser = await User.findById(playerId).exec();
+    foundUser.gameLog = [];
+    // TODO ver si esto lo pones como undefined
+    foundUser.successRate = 0;
+    await foundUser.save();
+    res.send(foundUser);
+  } catch (err) { res.send(err); }
+});
+
+// POST /players/{id}/games: un jugador específico realiza un tirón
+
+app.post('/players/:playerId/games', async (req, res) => {
+  const { playerId } = req.params;
+
+  const result = rollTheDice();
+  try {
+    const foundPlayer = await User.findById(playerId).exec();
+    foundPlayer.gameLog.push(result);
+    foundPlayer.successRate = foundPlayer.successRateCalc();
+    await foundPlayer.save();
+    res.send({ result });
+  } catch (err) { res.send(err); }
+});
+
+// GET /players/{id}/games: devuelve el listado de jugadas por un jugador.
+app.get('/players/:playerId/games', async (req, res) => {
+  const { playerId } = req.params;
+  try {
+    const foundPlayer = await User.findById(playerId).exec();
+    res.send(foundPlayer.gameLog);
+  } catch (err) { res.send(err); }
+});
+
+// Devuelve el porcentaje de exito de un jugardor especifico
+app.get('/players/:playerId/games/rate', async (req, res) => {
+  const { playerId } = req.params;
+  try {
+    const foundPlayer = await User.findById(playerId).exec();
+    res.json(foundPlayer.successRate);
+  } catch (err) { res.send(err); }
+});
+
+// GET /players: devuelve el listado de todos los jugadores del sistema con su porcentaje medio de logros
+app.get('/players', async (req, res) => {
+  try {
+    const allPlayers = await User.find({}, 'name successRate').exec();
+    res.json(allPlayers);
+  } catch (err) { res.send(err); }
 });
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
+
+// GET /players/ranking: devuelve el porcentaje medio de logros del conjunto de todos los jugadores
+// GET /players/ranking/loser: devuelve al jugador con peor porcentaje de éxito
+// GET /players/ranking/winner: devuelve al jugador con mejor porcentaje de éxito
+
+// TODO ver como sacar la base de datos de aca!!
