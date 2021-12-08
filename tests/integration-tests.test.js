@@ -12,8 +12,6 @@ beforeEach(async () => {
   User.collection.insertMany(data, (err, r) => {
     assert.equal(null, err);
     assert.equal(4, r.insertedCount);
-
-    // TODO ver que hacer con esto db.close();
   });
 });
 
