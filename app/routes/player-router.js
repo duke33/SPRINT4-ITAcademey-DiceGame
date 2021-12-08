@@ -103,3 +103,5 @@ router.get('/ranking/loser', async (req, res) => {
 });
 
 // TODO GET /players/ranking: devuelve el porcentaje medio de logros del conjunto de todos los jugadores
+
+module.exports = router;
