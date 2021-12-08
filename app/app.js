@@ -1,15 +1,15 @@
 /* eslint-disable max-len */
 const express = require('express');
+const mongoose = require('mongoose');
+const config = require('../config');
 
 const app = express();
-const port = 3000;
 
 //----------------------
-const mongoose = require('mongoose');
 const User = require('./user-schema');
 const rollTheDice = require('./game');
 
-const mongoDb = 'mongodb://localhost:27017/dice-game';
+const mongoDb = config.MONGODB_URI;
 mongoose.connect(mongoDb, { useUnifiedTopology: true, useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('connected', () => console.log('Db connected'));
@@ -121,8 +121,5 @@ app.get('/players/ranking/loser', async (req, res) => {
   } catch (err) { res.send(err); }
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-});
-
+module.exports = app;
 // GET /players/ranking: devuelve el porcentaje medio de logros del conjunto de todos los jugadores
