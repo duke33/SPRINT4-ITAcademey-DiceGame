@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 const User = require('../user-schema');
-const rollTheDice = require('../game');
+const rollTheDice = require('../helpers/game');
 // TODO error handling logic!!
 // TODO separar todo en modulos
 // TODO fijate si necesitas .exec!!!!!!!
