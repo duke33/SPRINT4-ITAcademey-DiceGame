@@ -1,24 +1,16 @@
 /* eslint-disable max-len */
 const express = require('express');
 const mongoDB = require('./data-base/db-mongo');
-
+// TODO ver si esta es la forma correcta de hacerlo
 const app = express();
-
-//----------------------
-
-//----------------------
+const playersRouter = require('./routes/player-router');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// TODO error handling logic!!
-// TODO separar todo en modulos
-// TODO ver como sacar la base de datos de aca!!
-// TODO fijate si necesitas .exec!!!!!!!
-// TODO poner status code????
 
 app.get('/', (req, res) => {
   res.send('Welcome to the dice Game!!!');
 });
+app.use('/players', playersRouter);
 
 module.exports = app;
-// TODO GET /players/ranking: devuelve el porcentaje medio de logros del conjunto de todos los jugadores
