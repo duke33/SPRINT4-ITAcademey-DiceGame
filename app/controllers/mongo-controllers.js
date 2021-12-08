@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-const express = require('express');
 const User = require('../user-schema');
 const rollTheDice = require('../game');
 // TODO error handling logic!!
