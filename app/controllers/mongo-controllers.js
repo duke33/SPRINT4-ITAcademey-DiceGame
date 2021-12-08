@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-const User = require('../user-schema');
+const User = require('../schemas/user-schema-mongo');
 const rollTheDice = require('../helpers/game');
 // TODO error handling logic!!
 // TODO separar todo en modulos
