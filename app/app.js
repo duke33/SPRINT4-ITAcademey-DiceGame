@@ -19,6 +19,10 @@ db.on('error', console.error.bind(console, 'mongo connection error'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // TODO error handling logic!!
+// TODO separar todo en modulos
+// TODO ver como sacar la base de datos de aca!!
+// TODO fijate si necesitas .exec!!!!!!!
+// TODO poner status code????
 
 app.get('/', (req, res) => {
   res.send('Welcome to the dice Game!!!');
@@ -37,7 +41,6 @@ app.post('/players', async (req, res) => {
   } catch (err) { res.send(err); }
 });
 
-// TODO hacer que devuelva el nombre nuevo
 // PUT /players: modifica el nombre del jugador
 app.put('/players/:playerId', async (req, res) => {
   const { playerId } = req.params;
@@ -47,7 +50,7 @@ app.put('/players/:playerId', async (req, res) => {
     res.send(updatedPlayer);
   } catch (err) { res.send(err); }
 });
-// TODO ver como tratas los errores, sin con next, o en el lugar
+
 // DELETE /players/{id}/games: elimina las tiradas del jugador //TODO cambiar lo que devuelve
 app.delete('/players/:playerId/games', async (req, res) => {
   const { playerId } = req.params;
@@ -102,12 +105,24 @@ app.get('/players', async (req, res) => {
   } catch (err) { res.send(err); }
 });
 
+// GET /players/ranking/winner: devuelve al jugador con mejor porcentaje de éxito
+app.get('/players/ranking/winner', async (req, res) => {
+  try {
+    const winnerPlayer = await User.findOne({}).sort('-successRate').exec();
+    res.json(winnerPlayer);
+  } catch (err) { res.send(err); }
+});
+
+// GET /players/ranking/loser: devuelve al jugador con peor porcentaje de éxito
+app.get('/players/ranking/loser', async (req, res) => {
+  try {
+    const winnerPlayer = await User.findOne({}).sort('successRate').exec();
+    res.json(winnerPlayer);
+  } catch (err) { res.send(err); }
+});
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
 
 // GET /players/ranking: devuelve el porcentaje medio de logros del conjunto de todos los jugadores
-// GET /players/ranking/loser: devuelve al jugador con peor porcentaje de éxito
-// GET /players/ranking/winner: devuelve al jugador con mejor porcentaje de éxito
-
-// TODO ver como sacar la base de datos de aca!!
