@@ -8,10 +8,7 @@ const rollTheDice = require('../helpers/game');
 // Crea un jugador
 const createUser = async (req, res) => {
   const { name } = req.body;
-  const previousUser = await User.find({ name }).exec();
-
-  console.log('condition1', !(previousUser.length === 0));
-  console.log('condition2', !(name === undefined));
+  const previousUser = await User.find({ name });
 
   if (!(previousUser.length === 0) && !(name === undefined)) { res.status(409).send({ error: 'Duplicated Username' }); } else {
     const newPlayer = new User({
@@ -40,7 +37,7 @@ const cleanGameLog = async (req, res) => {
   const { playerId } = req.params;
   try {
     const foundUser = await User.findById(playerId).exec();
-    foundUser.gameLog = null;
+    foundUser.gameLog = [];
     foundUser.successRate = null;
     await foundUser.save();
     res.send('Game Log erased');
