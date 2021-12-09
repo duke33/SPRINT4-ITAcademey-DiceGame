@@ -15,6 +15,7 @@ function successRateCalc() {
 
 const UserSchema = new Schema({
   name: { type: String, default: 'anonymous' },
+  registration_date: { type: Date, default: Date.now },
   gameLog: [],
   successRate: { type: Number, default: 0 },
 
