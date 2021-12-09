@@ -1,16 +1,11 @@
 /* eslint-disable max-len */
 const User = require('../schemas/user-schema-mongo');
 const rollTheDice = require('../helpers/game');
-// TODO error handling logic!!
-// TODO separar todo en modulos
+// TODO error handling logic try catch!!
 // TODO fijate si necesitas .exec!!!!!!!
 // TODO poner status code????
-// TODO falta timestamp!!
-// TODO try catch
-// TODO ver .exec()
 
 // Crea un jugador
-// TODO hacer que no se pueda repetir el nombre, a no ser que sea anonimo
 const createUser = async (req, res) => {
   const { name } = req.body;
   const previousUser = await User.find({ name }).exec();
@@ -45,11 +40,11 @@ const cleanGameLog = async (req, res) => {
   const { playerId } = req.params;
   try {
     const foundUser = await User.findById(playerId).exec();
-    foundUser.gameLog = [];
+    foundUser.gameLog = null;
     // TODO ver si esto lo pones como undefined
-    foundUser.successRate = 0;
+    foundUser.successRate = null;
     await foundUser.save();
-    res.send(foundUser);
+    res.send('Game Log erased');
   } catch (err) { res.send(err); }
 };
 

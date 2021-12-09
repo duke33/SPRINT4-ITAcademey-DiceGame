@@ -8,7 +8,6 @@ function successRateCalc() {
   const totalGames = this.gameLog.length;
 
   const successRate = ((wonGames / totalGames) * 100);
-  // TODO fijate como manejar esto mejor //TODO esto deberia ser null o el equivalente
   this.successRate = successRate;
   return successRate;
 }
