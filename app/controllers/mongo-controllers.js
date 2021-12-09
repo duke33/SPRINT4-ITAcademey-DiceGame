@@ -1,9 +1,6 @@
 /* eslint-disable max-len */
 const User = require('../schemas/user-schema-mongo');
 const rollTheDice = require('../helpers/game');
-// TODO error handling logic try catch!!
-
-// TODO poner status code????
 
 // Crea un jugador
 const createUser = async (req, res, next) => {
@@ -117,7 +114,6 @@ const looser = async (req, res, next) => {
 };
 
 // GET /players/ranking: devuelve el porcentaje medio de logros del conjunto de todos los jugadores
-// TODO excluir aquellos con succes rate null
 const successRateAvg = async (req, res, next) => {
   try {
     const globalAvgSuccessRate = await User.aggregate(
