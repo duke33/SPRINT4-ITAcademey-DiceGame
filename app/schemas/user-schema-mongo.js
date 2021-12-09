@@ -8,7 +8,7 @@ function successRateCalc() {
   const totalGames = this.gameLog.length;
 
   const successRate = ((wonGames / totalGames) * 100);
-  if (!successRate) { return 0; }// TODO fijate como manejar esto mejor //TODO esto deberia ser null o el equivalente
+  // TODO fijate como manejar esto mejor //TODO esto deberia ser null o el equivalente
   this.successRate = successRate;
   return successRate;
 }
@@ -17,7 +17,7 @@ const UserSchema = new Schema({
   name: { type: String, default: 'anonymous' },
   registration_date: { type: Date, default: Date.now },
   gameLog: [],
-  successRate: { type: Number, default: 0 },
+  successRate: { type: Number, default: null },
 
 });
 
