@@ -5,18 +5,29 @@ const rollTheDice = require('../helpers/game');
 // TODO separar todo en modulos
 // TODO fijate si necesitas .exec!!!!!!!
 // TODO poner status code????
+// TODO falta timestamp!!
+// TODO try catch
+// TODO ver .exec()
 
 // Crea un jugador
 // TODO hacer que no se pueda repetir el nombre, a no ser que sea anonimo
 const createUser = async (req, res) => {
-  const newPlayer = new User({
-    name: req.body.name,
-  });
+  const { name } = req.body;
+  const previousUser = await User.find({ name }).exec();
 
-  try {
-    await newPlayer.save();
-    res.send(newPlayer);
-  } catch (err) { res.send(err); }
+  console.log('condition1', !(previousUser.length === 0));
+  console.log('condition2', !(name === undefined));
+
+  if (!(previousUser.length === 0) && !(name === undefined)) { res.status(409).send({ error: 'Duplicated Username' }); } else {
+    const newPlayer = new User({
+      name,
+    });
+
+    try {
+      await newPlayer.save();
+      res.send(newPlayer);
+    } catch (err) { res.send(err); }
+  }
 };
 
 // Modifica el nombre del jugador
