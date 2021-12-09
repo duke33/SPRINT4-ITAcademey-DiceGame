@@ -110,8 +110,34 @@ const looser = async (req, res) => {
   } catch (err) { res.send(err); }
 };
 
+const successRateAvg = async (req, res) => {
+  console.log('entra');
+
+  // TODO filtrar los que son null porque no han jugado nunca. POner el numero ocmo nulll
+  // TODO filtra aquellos cuyio valor de tiradas en null
+  const globalAvgSuccesRate = await User.aggregate(
+    [{
+      $match: {
+        successRate: {
+          $ne: null,
+        },
+      },
+    },
+    {
+      $group:
+             {
+               _id: '_id',
+               successRateAvg: { $avg: '$successRate' },
+             },
+    },
+    ],
+  );
+
+  console.log('globalAvgSuccesRate:', globalAvgSuccesRate);
+  res.json(globalAvgSuccesRate[0].successRateAvg);
+};
 // TODO GET /players/ranking: devuelve el porcentaje medio de logros del conjunto de todos los jugadores
 
 module.exports = {
-  createUser, modifyPlayerName, cleanGameLog, makeAPlay, playersList, individualPlayerSuccessRate, playersAndSuccessRateList, winner, looser,
+  createUser, modifyPlayerName, cleanGameLog, makeAPlay, playersList, individualPlayerSuccessRate, playersAndSuccessRateList, winner, looser, successRateAvg,
 };

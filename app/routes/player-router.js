@@ -3,7 +3,7 @@ const express = require('express');
 
 const router = express.Router();
 const {
-  createUser, modifyPlayerName, cleanGameLog, makeAPlay, playersList, individualPlayerSuccessRate, playersAndSuccessRateList, winner, looser,
+  createUser, modifyPlayerName, cleanGameLog, makeAPlay, playersList, individualPlayerSuccessRate, playersAndSuccessRateList, winner, looser, successRateAvg,
 } = require('../controllers/mongo-controllers');
 
 // POST /players: crea un jugador
@@ -34,6 +34,7 @@ router.get('/ranking/winner', winner);
 // GET /players/ranking/loser: devuelve al jugador con peor porcentaje de éxito
 router.get('/ranking/loser', looser);
 
-// TODO GET /players/ranking: devuelve el porcentaje medio de logros del conjunto de todos los jugadores
+// GET /players/ranking: devuelve el porcentaje medio de logros del conjunto de todos los jugadores
+router.get('/ranking', successRateAvg);
 
 module.exports = router;
