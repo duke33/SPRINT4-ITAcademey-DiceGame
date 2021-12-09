@@ -36,7 +36,7 @@ const modifyPlayerName = async (req, res) => {
 const cleanGameLog = async (req, res) => {
   const { playerId } = req.params;
   try {
-    const foundUser = await User.findById(playerId).exec();
+    const foundUser = await User.findById(playerId);
     foundUser.gameLog = [];
     foundUser.successRate = null;
     await foundUser.save();
@@ -51,7 +51,7 @@ const makeAPlay = async (req, res) => {
 
   const result = rollTheDice();
   try {
-    const foundPlayer = await User.findById(playerId).exec();
+    const foundPlayer = await User.findById(playerId);
     foundPlayer.gameLog.push(result);
     foundPlayer.successRate = foundPlayer.successRateCalc();
     await foundPlayer.save();
@@ -63,7 +63,7 @@ const makeAPlay = async (req, res) => {
 const playersList = async (req, res) => {
   const { playerId } = req.params;
   try {
-    const foundPlayer = await User.findById(playerId).exec();
+    const foundPlayer = await User.findById(playerId);
     res.send(foundPlayer.gameLog);
   } catch (err) { res.send(err); }
 };
@@ -72,7 +72,7 @@ const playersList = async (req, res) => {
 const individualPlayerSuccessRate = async (req, res) => {
   const { playerId } = req.params;
   try {
-    const foundPlayer = await User.findById(playerId).exec();
+    const foundPlayer = await User.findById(playerId);
     res.json(foundPlayer.successRate);
   } catch (err) { res.send(err); }
 };
@@ -80,7 +80,7 @@ const individualPlayerSuccessRate = async (req, res) => {
 // Devuelve el listado de todos los jugadores del sistema con su porcentaje medio de logros
 const playersAndSuccessRateList = async (req, res) => {
   try {
-    const allPlayers = await User.find({}, 'name successRate').exec();
+    const allPlayers = await User.find({}, 'name successRate');
     res.json(allPlayers);
   } catch (err) { res.send(err); }
 };
@@ -88,15 +88,16 @@ const playersAndSuccessRateList = async (req, res) => {
 // GET /players/ranking/winner: devuelve al jugador con mejor porcentaje de éxito
 const winner = async (req, res) => {
   try {
-    const winnerPlayer = await User.findOne({}).sort('-successRate').exec();
+    const winnerPlayer = await User.findOne({}).sort('-successRate');
     res.json(winnerPlayer);
   } catch (err) { res.send(err); }
 };
 
+// TODO excluir aquellos con succes rate null
 // GET /players/ranking/loser: devuelve al jugador con peor porcentaje de éxito
 const looser = async (req, res) => {
   try {
-    const winnerPlayer = await User.findOne({}).sort('successRate').exec();
+    const winnerPlayer = await User.findOne({ successRate: { $ne: null } }).sort('successRate');
     res.json(winnerPlayer);
   } catch (err) { res.send(err); }
 };
