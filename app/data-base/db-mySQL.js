@@ -27,3 +27,5 @@ const connectSequelize = async () => {
 };
 
 connectSequelize();
+
+module.exports = sequelize;
