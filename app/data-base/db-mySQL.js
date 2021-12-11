@@ -15,6 +15,7 @@ const sequelize = new Sequelize(database, username, password, {
     paranoid: true,
   },
 });
+
 // TODO Modificarlo para que cree la base de datos si no existe
 const connectSequelize = async () => {
   try {
