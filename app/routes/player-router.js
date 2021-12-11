@@ -1,10 +1,12 @@
+/* eslint-disable import/no-dynamic-require */
 /* eslint-disable max-len */
 const express = require('express');
+const { controllersByEnv } = require('../../config');
 
 const router = express.Router();
 const {
   createUser, modifyPlayerName, cleanGameLog, makeAPlay, playersList, individualPlayerSuccessRate, playersAndSuccessRateList, winner, looser, successRateAvg,
-} = require('../controllers/mongoose-controllers');
+} = require(controllersByEnv);
 
 // POST /players: crea un jugador
 router.post('/', createUser);
