@@ -19,7 +19,7 @@ const sequelize = new Sequelize(database, username, password, {
 // TODO Modificarlo para que cree la base de datos si no existe
 const connectSequelize = async () => {
   try {
-    await sequelize.authenticate();
+    await sequelize.sync({ force: false });
     console.log('Connection to mySQL-DB has been established successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);
