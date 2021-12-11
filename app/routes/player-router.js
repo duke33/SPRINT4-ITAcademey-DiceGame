@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 const {
   createUser, modifyPlayerName, cleanGameLog, makeAPlay, playersList, individualPlayerSuccessRate, playersAndSuccessRateList, winner, looser, successRateAvg,
-} = require('../controllers/mongo-controllers');
+} = require('../controllers/mongoose-controllers');
 
 // POST /players: crea un jugador
 router.post('/', createUser);
