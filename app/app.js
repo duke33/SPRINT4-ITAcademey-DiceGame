@@ -5,7 +5,7 @@ const { dbByEnv } = require('../config');
 
 // eslint-disable-next-line no-unused-vars
 const db = require(dbByEnv);
-// TODO ver si esta es la forma correcta de hacerlo
+// TODO ver si esta es la forma correcta de hacerlo, sobre todo porque solamente haces un import y nada mas
 const app = express();
 const playersRouter = require('./routes/player-router');
 
