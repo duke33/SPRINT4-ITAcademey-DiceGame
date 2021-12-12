@@ -23,12 +23,17 @@ const createUser = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// Modifica el nombre del jugador //TODO fijate que esto te deja modificar el nombre a uno repetido y eso no deberia pasar! modificarlo tmb en mongo!
+// Modifica el nombre del jugador
 const modifyPlayerName = async (req, res, next) => {
   const { playerId } = req.params;
   const { newName } = req.body;
 
   try {
+    // first I have to make sure that the name selected is not already in use, since names can not be duplicated
+    const previousUser = await User.findOne({ where: { name: newName } });
+    if (previousUser
+    ) { res.status(409).send({ error: 'Duplicated Username' }); return; }
+
     const updatedPlayer = await User.findByPk(playerId);
     if (!updatedPlayer) {
       throw new Error('User not found');
