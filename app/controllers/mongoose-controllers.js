@@ -19,7 +19,7 @@ const createUser = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// Modifica el nombre del jugador
+// Modifica el nombre del jugador //TODO fijate que esto te deja modificar el nombre a uno repetido y eso no deberia pasar! modificarlo tmb en mongo!
 const modifyPlayerName = async (req, res, next) => {
   const { playerId } = req.params;
   const { newName } = req.body;
