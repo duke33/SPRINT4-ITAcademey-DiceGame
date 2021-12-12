@@ -29,7 +29,7 @@ const modifyPlayerName = async (req, res, next) => {
   const { newName } = req.body;
 
   try {
-    const updatedPlayer = await User.findOne({ where: { id: playerId } });
+    const updatedPlayer = await User.findByPk(playerId);
     if (!updatedPlayer) {
       throw new Error('User not found');
     }
