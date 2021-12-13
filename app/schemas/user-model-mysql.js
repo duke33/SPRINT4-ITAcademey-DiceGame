@@ -1,3 +1,4 @@
+// eslint-disable-next-line max-classes-per-file
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../data-base/db-mySQL');
 
@@ -9,5 +10,7 @@ User.init({
   },
   registration_date: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
 }, { sequelize, modelName: 'user' });
+
+// TODO podes sacar los timestamps
 
 module.exports = User;
