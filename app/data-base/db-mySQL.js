@@ -1,4 +1,5 @@
 const { Sequelize } = require('sequelize');
+const mysql = require('mysql2/promise');
 const config = require('../../config');
 
 const {
@@ -17,9 +18,15 @@ const sequelize = new Sequelize(database, username, password, {
 
 });
 
-// TODO Modificarlo para que cree la base de datos si no existe
 const connectSequelize = async () => {
   try {
+    // Create database if it does not exist/
+
+    const connection = await mysql.createConnection({
+      host, port, user: username, password,
+    });
+    await connection.query(`CREATE DATABASE IF NOT EXISTS \`${database}\`;`);
+    // ************** */
     await sequelize.sync({ force: false });
     console.log('Connection to mySQL-DB has been established successfully.');
   } catch (error) {
