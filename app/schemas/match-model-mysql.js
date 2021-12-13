@@ -1,0 +1,29 @@
+// eslint-disable-next-line max-classes-per-file
+const { Model, DataTypes } = require('sequelize');
+const sequelize = require('../data-base/db-mySQL');
+const User = require('./user-model-mysql');
+// TODO podes sacar los timestamps
+
+class Match extends Model {}
+Match.init({
+  dice1: {
+    type: DataTypes.INTEGER,
+  },
+  dice2: {
+    type: DataTypes.INTEGER,
+  },
+  gameWon: { type: DataTypes.BOOLEAN },
+}, { sequelize, modelName: 'match' });
+
+User.hasMany(Match); // A HasMany B
+Match.belongsTo(User); // A BelongsTo B
+
+// //TODO poner esto:
+
+// Foo.hasOne(Bar, {
+//   foreignKey: {
+//     allowNull: false
+//   }
+// });
+
+module.exports = Match;
