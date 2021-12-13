@@ -15,15 +15,12 @@ Match.init({
   gameWon: { type: DataTypes.BOOLEAN },
 }, { sequelize, modelName: 'match' });
 
-User.hasMany(Match); // A HasMany B
+User.hasMany(Match, {
+  foreignKey: {
+    allowNull: false,
+  },
+});
+
 Match.belongsTo(User); // A BelongsTo B
-
-// //TODO poner esto:
-
-// Foo.hasOne(Bar, {
-//   foreignKey: {
-//     allowNull: false
-//   }
-// });
 
 module.exports = Match;
