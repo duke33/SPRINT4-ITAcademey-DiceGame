@@ -9,6 +9,7 @@ User.init({
     defaultValue: 'anonymous',
   },
   registration_date: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
+  successRate: { type: DataTypes.FLOAT, defaultValue: null },
 }, { sequelize, modelName: 'user' });
 
 // TODO podes sacar los timestamps
