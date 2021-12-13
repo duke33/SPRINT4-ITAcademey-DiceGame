@@ -12,6 +12,4 @@ User.init({
   successRate: { type: DataTypes.FLOAT, defaultValue: null },
 }, { sequelize, modelName: 'user' });
 
-// TODO podes sacar los timestamps
-
 module.exports = User;

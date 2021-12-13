@@ -2,7 +2,6 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../data-base/db-mySQL');
 const User = require('./user-model-mysql');
-// TODO podes sacar los timestamps
 
 class Match extends Model {}
 Match.init({
