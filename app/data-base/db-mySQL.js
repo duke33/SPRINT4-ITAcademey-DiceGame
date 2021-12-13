@@ -11,9 +11,7 @@ const sequelize = new Sequelize(database, username, password, {
   host,
   dialect: 'mysql',
   port,
-  define: {
-    paranoid: true,
-  },
+
 });
 
 // TODO Modificarlo para que cree la base de datos si no existe
