@@ -51,7 +51,7 @@ const modifyPlayerName = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// Elimina las tiradas del jugador //TODO aca actualizar el rate del jugador cuando se elimine todo!!
+// Elimina las tiradas del jugador
 const cleanGameLog = async (req, res, next) => {
   //  await foo.setBar(null); // Un-associate ????
 
@@ -64,7 +64,6 @@ const cleanGameLog = async (req, res, next) => {
     } else {
       await Match.destroy({
         where: { userId: playerId },
-        // truncate: true, //TODO ver que es esto
       });
       foundUser.successRate = null;
       await foundUser.save();
