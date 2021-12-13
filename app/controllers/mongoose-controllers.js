@@ -24,6 +24,9 @@ const modifyPlayerName = async (req, res, next) => {
   const { playerId } = req.params;
   const { newName } = req.body;
   try {
+    const previousUser = await User.find({ newName });
+    if (previousUser) { res.status(409).send({ error: 'Duplicated Username' }); return; }
+
     const updatedPlayer = await User.findByIdAndUpdate(playerId, { name: newName }, { new: true });
     if (!updatedPlayer) {
       throw new Error('User not found');
