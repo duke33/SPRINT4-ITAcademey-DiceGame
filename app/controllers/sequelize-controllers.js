@@ -1,7 +1,14 @@
 /* eslint-disable max-len */
-const User = require('../schemas/user-model-mysql');
-const rollTheDice = require('../helpers/game');
+const { Sequelize } = require('sequelize');
 
+const { Op } = Sequelize;
+const User = require('../schemas/user-model-mysql');
+const Match = require('../schemas/match-model-mysql');
+// TODO incluir los archivos de postman
+const rollTheDice = require('../helpers/game');
+// TODO borrar gamelog que aparece en la base de datos!!
+// TODO pasar los errores a next
+// TODO borrar todos los console.log de este archivo!!!
 // Crea un jugador
 const createUser = async (req, res, next) => {
   const { name } = req.body;
@@ -20,7 +27,7 @@ const createUser = async (req, res, next) => {
       });
       res.json(newUser);
     }
-  } catch (err) { next(err); }
+  } catch (err) { console.log(err); }
 };
 
 // Modifica el nombre del jugador
@@ -45,56 +52,75 @@ const modifyPlayerName = async (req, res, next) => {
   } catch (err) { console.log(err); }
 };
 
-// Elimina las tiradas del jugador //TODO
+// Elimina las tiradas del jugador //TODO aca actualizar el rate del jugador cuando se elimine todo!!
 const cleanGameLog = async (req, res, next) => {
+  //  await foo.setBar(null); // Un-associate ????
+
   const { playerId } = req.params;
   try {
-    const foundUser = await User.findById(playerId);
+    const foundUser = await User.findByPk(playerId);
+
     if (!foundUser) {
       throw new Error('User not found');
+    } else {
+      await Match.destroy({
+        where: { userId: playerId },
+        // truncate: true, //TODO ver que es esto
+      });
+      foundUser.successRate = null;
+      await foundUser.save();
+
+      res.send('Game Log erased');
     }
-    foundUser.gameLog = [];
-    foundUser.successRate = null;
-    await foundUser.save();
-    res.send('Game Log erased');
-  } catch (err) { next(err); }
+  } catch (err) { console.log(err); }
 };
 
-// Un jugador específico realiza un tirón //TODO
+// Un jugador específico realiza un tirón
 
 const makeAPlay = async (req, res, next) => {
   const { playerId } = req.params;
 
-  const result = rollTheDice();
+  const { dice1, dice2, gameWon } = rollTheDice();
   try {
-    const foundPlayer = await User.findById(playerId);
+    const foundPlayer = await User.findByPk(playerId);
     if (!foundPlayer) {
       throw new Error('User not found');
     }
-    foundPlayer.gameLog.push(result);
-    foundPlayer.successRate = foundPlayer.successRateCalc();
-    await foundPlayer.save();
-    res.send({ result });
-  } catch (err) { next(err); }
+
+    const currentMatch = await Match.create({
+      dice1,
+      dice2,
+      gameWon,
+      userId: playerId,
+    });
+
+    // eslint-disable-next-line no-use-before-define
+    calculateAndUpdateSuccessRate(foundPlayer);
+    res.send({ currentMatch });
+  } catch (err) { console.log(err); }
 };
 
-// Devuelve el listado de jugadas por un jugador. //TODO
+// Devuelve el listado de jugadas por un jugador.
 const playersList = async (req, res, next) => {
   const { playerId } = req.params;
   try {
-    const foundPlayer = await User.findById(playerId);
-    if (!foundPlayer) {
-      throw new Error('User not found');
-    }
-    res.send(foundPlayer.gameLog);
+    const matches = await Match.findAll({
+      where: { UserId: playerId },
+      // truncate: true,
+    });
+    console.log('la longitud del array:', matches.length);
+    // if (!foundPlayer) {
+    //   throw new Error('User not found');
+    // }
+    res.send(matches);
   } catch (err) { next(err); }
 };
 
-// Devuelve el porcentaje de exito de un jugardor especifico //TODO
+// Devuelve el porcentaje de exito de un jugardor especifico
 const individualPlayerSuccessRate = async (req, res, next) => {
   const { playerId } = req.params;
   try {
-    const foundPlayer = await User.findById(playerId);
+    const foundPlayer = await User.findByPk(playerId);
     if (!foundPlayer) {
       throw new Error('User not found');
     }
@@ -102,56 +128,73 @@ const individualPlayerSuccessRate = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// Devuelve el listado de todos los jugadores del sistema con su porcentaje medio de logros //TODO
+// Devuelve el listado de todos los jugadores del sistema con su porcentaje medio de logros
 const playersAndSuccessRateList = async (req, res, next) => {
   try {
-    User.findAll().then((users) => {
-      res.json(users);
+    const list = await User.findAll({
+      attributes: ['name', 'successRate'],
     });
-    // const allPlayers = await User.find({}, 'name successRate');
-    // res.json(allPlayers);
+    res.json(list);
   } catch (err) { next(err); }
 };
 
-// GET /players/ranking/winner: devuelve al jugador con mejor porcentaje de éxito //TODO
+// GET /players/ranking/winner: devuelve al jugador con mejor porcentaje de éxito
 const winner = async (req, res, next) => {
   try {
-    const winnerPlayer = await User.findOne({}).sort('-successRate');
+    const winnerPlayer = await User.findOne({ attributes: ['name', 'successRate'], order: [['successRate', 'DESC']], where: { successRate: { [Op.ne]: null } } });
+
+    console.log('************winnerPlayer: ', winnerPlayer);
+
     res.json(winnerPlayer);
-  } catch (err) { next(err); }
+  } catch (err) { console.log(err); }
 };
 
-// GET /players/ranking/loser: devuelve al jugador con peor porcentaje de éxito //TODO
+// GET /players/ranking/loser: devuelve al jugador con peor porcentaje de éxito
 const looser = async (req, res, next) => {
   try {
-    const winnerPlayer = await User.findOne({ successRate: { $ne: null } }).sort('successRate');
+    const winnerPlayer = await User.findOne({ attributes: ['name', 'successRate'], order: [['successRate']], where: { successRate: { [Op.ne]: null } } });
+
     res.json(winnerPlayer);
+  } catch (err) { console.log(err); }
+};
+
+// GET /players/ranking: devuelve el porcentaje medio de logros del conjunto de todos los jugadores
+const successRateAvg = async (req, res, next) => {
+  try {
+    const avg = await User.findAll({
+      attributes: [
+        [Sequelize.fn('AVG', Sequelize.col('successRate')), 'avgSuccessRate'],
+      ],
+
+    });
+    console.log('avg:::******', avg);
+    res.json(avg);
   } catch (err) { next(err); }
 };
 
-// GET /players/ranking: devuelve el porcentaje medio de logros del conjunto de todos los jugadores //TODO
-const successRateAvg = async (req, res, next) => {
-  try {
-    const globalAvgSuccessRate = await User.aggregate(
-      [{
-        $match: {
-          successRate: {
-            $ne: null,
-          },
-        },
-      },
-      {
-        $group:
-             {
-               _id: '_id',
-               successRateAvg: { $avg: '$successRate' },
-             },
-      },
-      ],
-    );
-    res.json(globalAvgSuccessRate[0].successRateAvg);
-  } catch (err) { next(err); }
-};
+async function calculateAndUpdateSuccessRate(player) {
+  const totalMatches = await Match.count({
+    where: {
+      userId: player.id,
+
+    },
+  });
+  const wonMatches = await Match.count({
+    where: {
+      gameWon: true,
+      userId: player.id,
+
+    },
+  });
+  // TODO borrar todos estos console.log
+  console.log('wonMatches', wonMatches);
+  console.log('totalMatches', totalMatches);
+  const successRate = wonMatches / totalMatches;
+  console.log('successRate', successRate);
+  // eslint-disable-next-line no-param-reassign
+  player.successRate = successRate * 100;
+  await player.save();
+}
 
 module.exports = {
   createUser, modifyPlayerName, cleanGameLog, makeAPlay, playersList, individualPlayerSuccessRate, playersAndSuccessRateList, winner, looser, successRateAvg,
