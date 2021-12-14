@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 const loginRouter = require('express').Router();
 
-loginRouter.post('/login', async (req, res) => { // TODO modificar todo esto
+// La funcion esta deberia haberse puesto en controllers.
+loginRouter.post('/login', async (req, res) => {
   const userProvided = req.body.user;
 
   const passwordProvided = req.body.password;
@@ -11,27 +12,24 @@ loginRouter.post('/login', async (req, res) => { // TODO modificar todo esto
   // En este lugar, deberia comprobar con la base de datos:
   const passwordCorrect = (userProvided === null || userProvided !== 'admin')
     ? false
-    : (password === passwordProvided); // TODO tener cuidado aca con la triple igualdad
+    : (password === passwordProvided);
 
   if (!(user && passwordCorrect)) {
     return res.status(401).json({
       error: 'invalid username or password',
     });
   }
-  // TODO mover de lugar este archivo
-  // TODO comprobar login con otros username y otros passwords
 
   const userForToken = {
     username: userProvided,
     payload: 'some payload',
   };
 
-  // TODO buscar lo que seria un secret apropiado
   const token = jwt.sign(userForToken, process.env.SECRET);
 
   res
     .status(200)
-    .send({ token, user });// TODO hacer este mensaje mas amigable ver como lo hacen ellos
+    .send({ token, user });
 });
 
 module.exports = loginRouter;
