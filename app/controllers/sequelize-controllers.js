@@ -6,8 +6,6 @@ const User = require('../schemas/user-model-mysql');
 const Match = require('../schemas/match-model-mysql');
 const rollTheDice = require('../helpers/game');
 
-// TODO incluir los archivos de postman
-
 // Crea un jugador
 const createUser = async (req, res, next) => {
   const { name } = req.body;
