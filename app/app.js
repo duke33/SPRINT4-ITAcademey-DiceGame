@@ -1,19 +1,10 @@
-/* eslint-disable import/no-dynamic-require */
 /* eslint-disable max-len */
 const express = require('express');
-const { dbByEnv } = require('../config');
-
-// const db = require(dbByEnv);
-const { connectMongo } = require('./data-base/db-mongo');
-
-const { connectSequelize } = require('./data-base/db-mySQL');
-
-if (dbByEnv === 'mongo') { connectMongo(); } else if (dbByEnv === 'mySQL') {
-  connectSequelize();
-}
+const { selectDB } = require('./helpers/behaviorByEnv');
 
 // TODO ver si esta es la forma correcta de hacerlo, sobre todo porque solamente haces un import y nada mas. Agregar error si lo mandan sin los parametros env
 const app = express();
+selectDB();
 const playersRouter = require('./routes/player-router');
 const loginRouter = require('./routes/login-router');
 const authenticationRouter = require('./middleware/authenticate-jwt');
