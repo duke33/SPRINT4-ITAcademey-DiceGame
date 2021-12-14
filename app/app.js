@@ -10,6 +10,7 @@ const app = express();
 const playersRouter = require('./routes/player-router');
 const loginRouter = require('./controllers/login');
 const authenticationRouter = require('./middleware/authenticate-jwt');
+const { unknownEndpoint, errorHandler } = require('./middleware/error-handler');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -21,5 +22,8 @@ app.use('/', loginRouter);
 app.use(authenticationRouter);
 
 app.use('/players', playersRouter);
-
+app.use(errorHandler, unknownEndpoint);
 module.exports = app;
+
+// TODO agregar los archivos de postman, contar que tiene el token guardado!
+// TODO ver como coño esta implementado la forma que coje el esquema basado en ENV
