@@ -34,6 +34,6 @@ const connectSequelize = async () => {
   }
 };
 
-connectSequelize();
+module.exports = { connectSequelize, sequelize };
 
-module.exports = sequelize;
+// TODO se rompe algo si lo borro?¡?? module.exports = ;

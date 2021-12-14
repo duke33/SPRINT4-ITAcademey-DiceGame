@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const { PORT } = process.env;
-
+// TODO fijate de subir .env
 // TODO vas a tener que borrar esto!!???
 const MONGODB_URI = process.env.NODE_ENV === 'test' ? process.env.TEST_MONGODB_URI : process.env.MONGODB_URI;
 
@@ -16,10 +16,10 @@ let dbByEnv;
 let controllersByEnv;
 
 if (process.env.NODE_ENV === 'mongo-persistence') {
-  dbByEnv = './data-base/db-mongo';
+  dbByEnv = 'mongo';
   controllersByEnv = '../controllers/mongoose-controllers';
 } else if (process.env.NODE_ENV === 'mysql-persistence') {
-  dbByEnv = './data-base/db-mySQL';
+  dbByEnv = 'mySQL';
   controllersByEnv = '../controllers/sequelize-controllers';
 }
 
@@ -30,5 +30,3 @@ module.exports = {
   dbByEnv,
   controllersByEnv,
 };
-
-// TODO fijate de subir .env
