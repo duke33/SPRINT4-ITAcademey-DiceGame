@@ -21,13 +21,17 @@ loginRouter.post('/login', async (req, res) => { // TODO modificar todo esto
   // TODO mover de lugar este archivo
   // TODO comprobar login con otros username y otros passwords
 
-  const userForToken = user;
+  const userForToken = {
+    username: userProvided,
+    payload: 'some payload',
+  };
+
   // TODO buscar lo que seria un secret apropiado
   const token = jwt.sign(userForToken, process.env.SECRET);
 
   res
     .status(200)
-    .send({ token, user });// TODO hacer este mensaje mas amigable
+    .send({ token, user });// TODO hacer este mensaje mas amigable ver como lo hacen ellos
 });
 
 module.exports = loginRouter;
