@@ -8,8 +8,8 @@ loginRouter.post('/login', async (req, res) => { // TODO modificar todo esto
   const user = 'admin';
   const password = '12345';
 
-  // eslint-disable-next-line max-len
-  const passwordCorrect = user === null // TODO mejorar esto para que el usuario tenga que ser especificamente admin, podes poner un OR aca
+  // En este lugar, deberia comprobar con la base de datos:
+  const passwordCorrect = (userProvided === null || userProvided !== 'admin')
     ? false
     : (password === passwordProvided); // TODO tener cuidado aca con la triple igualdad
 
