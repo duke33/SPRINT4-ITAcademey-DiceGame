@@ -1,8 +1,6 @@
 require('dotenv').config();
 
 const { PORT } = process.env;
-// TODO fijate de subir .env
-// TODO vas a tener que borrar esto!!???
 const MONGODB_URI = process.env.NODE_ENV === 'test' ? process.env.TEST_MONGODB_URI : process.env.MONGODB_URI;
 
 const mysqlConfig = {
