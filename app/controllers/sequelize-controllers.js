@@ -66,7 +66,7 @@ const cleanGameLog = async (req, res, next) => {
       foundUser.successRate = null;
       await foundUser.save();
 
-      res.send('Game Log erased');
+      res.json({ logErased: true });
     }
   } catch (err) { next(err); }
 };
