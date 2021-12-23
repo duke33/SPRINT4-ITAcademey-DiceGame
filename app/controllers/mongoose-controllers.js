@@ -88,7 +88,7 @@ const individualPlayerSuccessRate = async (req, res, next) => {
     if (!foundPlayer) {
       throw new Error('User not found');
     }
-    res.json(foundPlayer.successRate);
+    res.json({ successRate: foundPlayer.successRate });
   } catch (err) { next(err); }
 };
 
