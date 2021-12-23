@@ -2,7 +2,7 @@
 
 ## Instrucciones
 
-- Crear un archivo `.env` en el directorio root con el siguiente contenido:
+- Añadir nombre de usuario y contraseña al archivo `template.env`. El archivo posee el siguiente contenido:
 
 ```
 PORT=3000
@@ -15,6 +15,7 @@ SECRET=banana
 ```
 
 - Reemplazar los corchetes y su contenido con los valores propios (no incluir [ ]).
+- Renombrar el archivo de `template.env` a `.env`
 - La aplicación se puede ejecutar desde consola, con persistencia en MongoDB o MySQL, usando los scripts:
 
 ```
