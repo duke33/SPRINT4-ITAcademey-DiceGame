@@ -12,8 +12,7 @@ const getTokenFrom = (request) => {
 authenticationRouter.all('*', async (req, res, next) => {
   const token = getTokenFrom(req);
   try {
-    const decodedToken = jwt.verify(token, process.env.SECRET);
-    console.log(`Authenticated as ${decodedToken.username}`);
+    jwt.verify(token, process.env.SECRET);
   } catch (err) { next(err); }
   next();
 });
